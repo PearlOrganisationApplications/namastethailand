@@ -67,7 +67,9 @@ class Api {
         }),
       );
 
-      if (response.data['status']==201) {
+      print('Res ${response}');
+
+      if (response.data['status'].toString()=="201") {
         _saveUserData(response);
       } else {
         print('Sign in with options failed. Status code: ${response.statusCode}, ${response.data}');

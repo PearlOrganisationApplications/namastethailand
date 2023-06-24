@@ -400,15 +400,16 @@ class _LoginState extends State<Login> {
     if(response == null){
       EasyLoading.showToast('Unable to communicate to server!');
 
-    }else if(response.data['status'] == 201){
+    }else if(response.data['status'].toString() == "201"){
       EasyLoading.showToast('Login successful!');
-      Navigator.pushReplacement<void, void>(
+
+      Navigator.pushReplacement(
           context,
-          MaterialPageRoute<void>(
+          MaterialPageRoute(
             builder: (BuildContext context) =>
                 Dashboard(),
           ));
-    }else if(response.data['status'] == 501){
+    }else if(response.data['status'] == "501"){
       EasyLoading.showToast('Invalid Credential');
       print('No Data Available');
     }else{
