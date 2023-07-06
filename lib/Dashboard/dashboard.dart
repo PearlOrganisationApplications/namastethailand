@@ -12,12 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
+import 'package:namastethailand/CreateAccount/signUp.dart';
 import 'package:namastethailand/HelpLineNumber/helpus.dart';
 import 'package:namastethailand/LanguageTranslation/languageTraslation.dart';
 import 'package:namastethailand/UserProfile/userprofile.dart';
 import 'package:namastethailand/Utility/logout.dart';
 import 'package:namastethailand/Utility/sharePrefrences.dart';
 import 'package:namastethailand/login.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../AddShop/add_shop.dart';
 import '../CityInformation/cityInformation.dart';
 import '../ContactUs/contactus.dart';
@@ -1126,14 +1128,11 @@ Widget getAdvertisement({required String imagePath, required String place}){
               if(AppPreferences.getUserId()!=""){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddShop()),
+                  MaterialPageRoute(builder: (context) => const AddShop()),
                 );
               }
               else{
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
+                showRegisterDailogBox(context);
 
               }
 
@@ -1300,5 +1299,15 @@ Widget getAdvertisement({required String imagePath, required String place}){
   });
 
 }
-
+void showRegisterDailogBox(BuildContext context) => showDialog(context: context, builder: (BuildContext context){
+  return AlertDialog(
+    title: Text("Add shop"),
+    content: Text("Please create your account to add your shop"),
+    actions: [
+      TextButton(child: Text("Register Here"), onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUp()));
+      },)
+    ],
+  );
+});
 

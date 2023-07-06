@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:namastethailand/CreateAccount/signUp.dart';
@@ -14,6 +16,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'dart:io';
 import 'UserProfile/otpScreen.dart';
 import 'Utility/sharePrefrences.dart';
+import 'core/constants/my_colors.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -49,63 +52,7 @@ class _LoginState extends State<Login> {
 
   Dio dio = Dio();
 
-  /*void _onSubmit() async {
-    // Validate form data
-    EasyLoading.show(status: "please wait");
-    if (_emailController.text.isEmpty || _passController.text.isEmpty) {
-      EasyLoading.dismiss();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill out all the fields')),
-      );
-      return;
-    }
 
-    // Make a POST request to the SignUp API
-    try {
-      final response = await dio.post(
-        'https://test.pearl-developer.com/thaitours/public/api/login',
-        data: {
-          'email': _emailController.text,
-          'type': "normal",
-          'password': _passController.text,
-        },
-      );
-
-      String userId = response.data["token"];
-      String displayName = response.data['user']['name'];
-      String userEmail = response.data['user']['email'];
-      String phone_no = response.data['user']['mobile_no'];
-
-      if (response.statusCode == 200) {
-        EasyLoading.dismiss();
-        print(
-            "signUpUserdata455555555555555555555555555555555555555555555555555555555555555555555555${response.data["token"]}");
-        AppPreferences.setUserProfile(
-            userId, displayName, userEmail, "", phone_no);
-        Navigator.pushReplacement<void, void>(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => const Dashboard(),
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome to Thailand tour')),
-        );
-      } else {
-        EasyLoading.dismiss();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('SignUp failed')),
-        );
-      }
-    } catch (e) {
-      EasyLoading.dismiss();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('SignUp failed')),
-      );
-
-      print(e);
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -178,14 +125,16 @@ class _LoginState extends State<Login> {
                           child: GestureDetector(
                             onTap: () {
 
-
-                              if(_formKey.currentState!.validate()){
+                               if(_emailController.text.isEmpty || _passController.text.isEmpty){
+                                 showTopSnackBar(context);
+                               }
+                             else if(_formKey.currentState!.validate()){
                                 performLogin(type: 'normal', email: _emailController.text, password: _passController.text);
                               }
                               //_onSubmit();
                             },
                             child: Container(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.symmetric(vertical: 10.h),
                                 decoration: BoxDecoration(
                                     color: Colors.orangeAccent,
                                     borderRadius: BorderRadius.circular(12)),
@@ -195,7 +144,7 @@ class _LoginState extends State<Login> {
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 18),
+                                      fontSize: 10.sp),
                                 ))),
                           ),
                         ),
@@ -226,7 +175,7 @@ class _LoginState extends State<Login> {
                                             EasyLoading.dismiss();
                                             if(response == null){
                                               EasyLoading.showToast('Unable to communicate to server!');
-                                            }else if(response.data['status'] == true){
+                                            }else if(response.data['status'] == "true"){
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
@@ -235,10 +184,12 @@ class _LoginState extends State<Login> {
                                                             email: _emailController.text
                                                                 .toString())),
                                               );
-                                            }else if(response.data['status'] == false){
-                                              EasyLoading.showToast('Unable to send OTP!');
+                                            }else if(response.data['status'] == "false"){
+                                              EasyLoading.showToast(response.toString());
+
                                             }else{
                                               EasyLoading.showToast(response.toString());
+
                                             }
                                           }else{
                                             EasyLoading.showToast('Enter your email!');
@@ -250,7 +201,7 @@ class _LoginState extends State<Login> {
                                 },
                               );
                             },
-                            child: Text("Forgot your password")),
+                            child: Text("Forgot your password",style: TextStyle(fontSize: 8.sp, color: Colors.purpleAccent),)),
 
                         GestureDetector(
                             onTap: (){
@@ -259,7 +210,7 @@ class _LoginState extends State<Login> {
                             },
                             child: Text("Login as a guest",
                               style: GoogleFonts.aBeeZee( color: Colors.red,
-                                  fontSize: 16, fontWeight: FontWeight.w500),)),
+                                  fontSize: 7.sp, fontWeight: FontWeight.w500),)),
                         SizedBox(height: 5,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +218,7 @@ class _LoginState extends State<Login> {
                             Text('Not a member?',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
-                                    fontSize: 17,
+                                    fontSize: 7.sp,
                                     letterSpacing: 1)),
                             GestureDetector(
                               onTap: () {
@@ -280,14 +231,14 @@ class _LoginState extends State<Login> {
                               child: Text('Register',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w300,
-                                      fontSize: 17,
+                                      fontSize: 7.sp,
                                       color: Colors.blue,
                                       letterSpacing: 1)),
                             )
                           ],
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 10.h,
                         ),
                         Row(
                           children: <Widget>[
@@ -299,7 +250,7 @@ class _LoginState extends State<Login> {
                               "Or Login With",
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
-                                  fontSize: 15,
+                                  fontSize: 7.sp,
                                   letterSpacing: 1),
                             ),
                             Expanded(
@@ -341,15 +292,17 @@ class _LoginState extends State<Login> {
                               },
 
                               child: BlurryContainer(
-                                height: 70,
-                                width: 70,
+                                height: 50.h,
+                                width: 40.w,
                                 blur: 10,
                                 elevation: 1,
                                 color: Colors.white,
-                                padding: EdgeInsets.all(25),
-                                child: Icon(
-                                  Icons.apple,
-                                  color: Colors.black,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.apple,
+                                    color: Colors.black,
+                                    size: 20.sp,
+                                  ),
                                 ),
                               ),
                             ):
@@ -419,3 +372,18 @@ class _LoginState extends State<Login> {
 
   }
 }
+void showTopSnackBar(BuildContext context)=>
+    Flushbar(
+  icon: Icon(
+    Icons.error,
+    size: 25.sp,
+  ),
+  shouldIconPulse: true,
+  title: "Error",
+    message: "Please check your input fields",
+  duration: Duration(seconds: 3),
+  flushbarPosition: FlushbarPosition.TOP,
+  backgroundColor: Colors.red,
+  borderRadius: BorderRadius.circular(20.r),
+  margin: EdgeInsets.all(10),
+)..show(context);

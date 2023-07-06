@@ -1,10 +1,13 @@
 
+import 'dart:convert';
+
 import 'package:awesome_otp_screen/awesome_otp_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:namastethailand/UserProfile/userprofile.dart';
 
 import '../Dashboard/dashboard.dart';
+import 'package:http/http.dart'as http;
 
 
 
@@ -19,31 +22,31 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  // late int confirmOtp;
-  // final String apiUrl = 'https://test.pearl-developer.com/hostshine/public/api/user/forgot-password';
-  // Future<void> forgotPassword() async {
-  //
-  //   final response = await http.post(Uri.parse(apiUrl), body: {'email': widget.email});
-  //
-  //   print(response);
-  //
-  //   if (response.statusCode == 200) {
-  //     final Map<String, dynamic> data = jsonDecode(response.body);
-  //     int  otp = data['otp'];
-  //     confirmOtp = otp;
-  //     print(otp);
-  //
-  //   } else {
-  //     // Display an error message to the user
-  //   }
-  // }
-  //
-  // @override
-  // void initState() {
-  //
-  //   forgotPassword();
-  //   super.initState();
-  // }
+  late int confirmOtp;
+  final String apiUrl = 'https://test.pearl-developer.com/hostshine/public/api/user/forgot-password';
+  Future<void> forgotPassword() async {
+
+    final response = await http.post(Uri.parse(apiUrl), body: {'email': widget.email});
+
+    print(response);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      int  otp = data['otp'];
+      confirmOtp = otp;
+      print(otp);
+
+    } else {
+      // Display an error message to the user
+    }
+  }
+
+  @override
+  void initState() {
+
+    forgotPassword();
+    super.initState();
+  }
   void moveToNextScreen(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) =>  Dashboard()));
@@ -58,7 +61,7 @@ class _OtpScreenState extends State<OtpScreen> {
       await Future.delayed(const Duration(milliseconds: 2000));
 
       // int intOtp = int.parse(otp);
-      if (otp == "1234") {
+      if (otp == confirmOtp.toString()) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -96,7 +99,7 @@ class _OtpScreenState extends State<OtpScreen> {
         return "Done";
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email is not found')),
+          SnackBar(content: Text('Wrong Otp')),
         );        return "The entered Otp is wrong";
       }
     }
